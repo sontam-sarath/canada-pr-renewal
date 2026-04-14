@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canada PR Toolkit</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #D52B1E;
+    --red-light: #f5e6e5;
+    --red-mid: #e8b4b0;
+    --leaf: #2D6A2D;
+    --leaf-light: #e8f2e8;
+    --dark: #1a1a1a;
+    --mid: #555;
+    --light: #f7f5f2;
+    --white: #ffffff;
+    --border: #e2ddd8;
+    --done-bg: #e8f5e9;
+    --done-fg: #2e7d32;
+    --pending-bg: #fff3e0;
+    --pending-fg: #e65100;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--dark);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 58px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    color: var(--white);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.01em;
+    margin-right: auto;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-tab {
+    color: #aaa;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+  }
+  .nav-tab:hover { color: var(--white); background: #333; }
+  .nav-tab.active { color: var(--white); background: var(--red); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 2rem; max-width: 960px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── PAGE HEADERS ── */
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .page-header h1 em { color: var(--red); font-style: italic; }
+  .page-header p { color: var(--mid); font-size: 0.92rem; margin-top: 0.4rem; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  /* ── CHECKLIST ── */
+  .section-group { margin-bottom: 0.5rem; }
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 0.8rem 0 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--red-mid);
+    opacity: 0.4;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.3rem;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .checklist-item:hover { background: var(--light); border-color: var(--border); }
+
+  .checklist-item .item-check {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    background: var(--white);
+  }
+  .checklist-item.done .item-check {
+    background: var(--leaf);
+    border-color: var(--leaf);
+    color: white;
+  }
+  .checklist-item.done .item-check::after { content: '✓'; font-size: 12px; font-weight: 700; }
+
+  .item-text { flex: 1; font-size: 0.9rem; }
+  .checklist-item.done .item-text { text-decoration: line-through; color: #999; }
+
+  .item-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.03em;
+  }
+  .badge-yes { background: var(--red-light); color: var(--red); }
+  .badge-opt { background: var(--leaf-light); color: var(--leaf); }
+
+  .item-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .status-done { background: var(--done-bg); color: var(--done-fg); }
+  .status-pending { background: var(--pending-bg); color: var(--pending-fg); }
+
+  /* File upload area */
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--light);
+    margin-top: 0.5rem;
+  }
+  .upload-area:hover, .upload-area.drag-over {
+    border-color: var(--red);
+    background: var(--red-light);
+  }
+  .upload-area p { font-size: 0.82rem; color: var(--mid); }
+  .upload-area .upload-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+
+  .file-list { margin-top: 0.75rem; }
+  .file-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.83rem;
+  }
+  .file-item .file-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-item .file-size { color: var(--mid); font-size: 0.75rem; white-space: nowrap; }
+  .file-item .file-del {
+    color: #bbb; cursor: pointer; font-size: 1rem;
+    padding: 0 4px; border: none; background: none; line-height: 1;
+  }
+  .file-item .file-del:hover { color: var(--red); }
+  .file-item .file-icon { font-size: 1rem; }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    background: var(--border);
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--leaf));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; color: var(--mid);
+    margin-bottom: 0.3rem;
+  }
+  .progress-label strong { color: var(--dark); }
+
+  /* ── CALCULATOR ── */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .settings-grid { grid-template-columns: 1fr; } }
+
+  .field-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .field-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .field-group label .req { color: var(--red); margin-left: 2px; }
+  .field-group input, .field-group select {
+    padding: 0.6rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    background: var(--white);
+    color: var(--dark);
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .field-group input:focus, .field-group select:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+  .field-highlight input {
+    border-color: #e67c00 !important;
+    background: #fff8f0;
+    font-weight: 600;
+    color: #b45309;
+  }
+
+  /* trips table */
+  .trips-header {
+    display: grid;
+    grid-template-columns: 30px 1fr 1fr 80px 80px 1fr 36px;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 0.3rem;
+  }
+  .trip-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 1fr 80px 80px 1fr 36px;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.25rem;
+    border: 1px solid transparent;
+    transition: background 0.15s;
+  }
+  .trip-row:hover { background: var(--light); border-color: var(--border); }
+  .trip-row:nth-child(even) { background: #fafaf8; }
+  .trip-row:nth-child(even):hover { background: var(--light); }
+  .trip-num { font-size: 0.75rem; color: #bbb; font-weight: 600; text-align: center; }
+  .trip-row input {
+    padding: 0.4rem 0.6rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.84rem;
+    background: #fffef9;
+    color: var(--dark);
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .trip-row input:focus { outline: none; border-color: var(--red); }
+  .trip-days {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--red);
+    text-align: center;
+  }
+  .trip-counted {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--leaf);
+    text-align: center;
+  }
+  .trip-del {
+    width: 28px; height: 28px;
+    border: none; background: none;
+    color: #ccc; cursor: pointer;
+    font-size: 1rem; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    margin: 0 auto;
+  }
+  .trip-del:hover { background: var(--red-light); color: var(--red); }
+
+  .add-trip-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    background: none;
+    color: var(--mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .add-trip-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+  /* Results */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 600px) { .results-grid { grid-template-columns: 1fr 1fr; } }
+
+  .result-box {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+  .result-box .r-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--mid); margin-bottom: 0.3rem; }
+  .result-box .r-value { font-size: 1.5rem; font-family: 'DM Serif Display', serif; color: var(--dark); }
+  .result-box .r-sub { font-size: 0.72rem; color: var(--mid); margin-top: 0.1rem; }
+
+  .eligibility-banner {
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    margin-top: 1rem;
+  }
+  .eligible-yes { background: var(--done-bg); border: 2px solid #a5d6a7; }
+  .eligible-no  { background: var(--pending-bg); border: 2px solid #ffcc80; }
+  .eligible-empty { background: var(--light); border: 2px solid var(--border); }
+
+  .banner-icon { font-size: 2rem; }
+  .banner-text .b-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+  .eligible-yes .b-title { color: var(--done-fg); }
+  .eligible-no  .b-title { color: var(--pending-fg); }
+  .banner-text .b-sub { font-size: 0.82rem; color: var(--mid); margin-top: 0.2rem; }
+
+  .progress-section { margin-top: 0.8rem; }
+
+  /* Buttons */
+  .btn-primary {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 0.65rem 1.4rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: #b32319; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(213,43,30,0.3); }
+
+  .note-box {
+    background: #fff8e7;
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 8px 8px 0;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: #92400e;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--dark); color: white;
+    padding: 0.75rem 1.2rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 999;
+    max-width: 280px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 600px) {
+    .trips-header { display: none; }
+    .trip-row { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .trip-num { display: none; }
+    .trip-days, .trip-counted { text-align: left; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--light); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🍁 <span>Canada</span>&nbsp;PR Toolkit</div>
+  <button class="nav-tab active" onclick="showPage('checklist', this)">PR Checklist</button>
+  <button class="nav-tab" onclick="showPage('calculator', this)">Presence Calculator</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 1 — CHECKLIST
+══════════════════════════════════════════════ -->
+<div class="page active" id="page-checklist">
+  <div class="page-header">
+    <h1>PR Renewal <em>Checklist</em></h1>
+    <p>Track your documents and upload files for each item. All data saved locally in your browser.</p>
+  </div>
+
+  <!-- Progress Summary -->
+  <div class="card">
+    <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <div><div class="progress-label"><span>Completed</span></div><div style="font-family:'DM Serif Display',serif;font-size:2rem;" id="done-count">0</div></div>
+      <div><div class="progress-label"><span>Pending</span></div><div style="font-family:'DM Serif Display',serif;font-size:2rem;" id="pending-count">0</div></div>
+      <div><div class="progress-label"><span>Total</span></div><div style="font-family:'DM Serif Display',serif;font-size:2rem;" id="total-count">0</div></div>
+      <div style="flex:1;min-width:160px;align-self:flex-end;padding-bottom:0.25rem;">
+        <div class="progress-label"><span>Progress</span><strong id="progress-pct">0%</strong></div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checklist items rendered by JS -->
+  <div class="card" id="checklist-container"></div>
+
+  <!-- File Upload -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Document Uploads</div>
+    <p style="font-size:0.83rem;color:var(--mid);margin-bottom:1rem;">Upload supporting documents — stored securely in your browser's IndexedDB (never sent anywhere).</p>
+    <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()"
+         ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <div class="upload-icon">📎</div>
+      <p><strong>Click to upload</strong> or drag and drop</p>
+      <p style="margin-top:0.2rem;font-size:0.75rem;">PDF, JPG, PNG, DOCX — any format</p>
+    </div>
+    <input type="file" id="file-input" multiple style="display:none" onchange="handleFileSelect(event)">
+    <div class="file-list" id="file-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2 — CALCULATOR
+══════════════════════════════════════════════ -->
+<div class="page" id="page-calculator">
+  <div class="page-header">
+    <h1>Physical Presence <em>Calculator</em></h1>
+    <p>Citizenship: 1,095 days · PR Renewal: 730 days · Days before PR date count as 0.5</p>
+  </div>
+
+  <!-- Settings -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Settings</div>
+    <div class="settings-grid">
+      <div class="field-group">
+        <label>Application Date <span class="req">*</span></label>
+        <input type="date" id="app-date" value="2026-08-01" oninput="calculate()">
+      </div>
+      <div class="field-group field-highlight">
+        <label>Date You Became PR <span class="req">*</span> 🍁</label>
+        <input type="date" id="pr-date" value="2022-01-17" oninput="calculate()">
+      </div>
+      <div class="field-group">
+        <label>Application Type</label>
+        <select id="app-type" onchange="calculate()">
+          <option value="citizenship">Citizenship (1,095 days)</option>
+          <option value="pr">PR Renewal (730 days)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>5-Year Window Start</label>
+        <input type="date" id="window-start" readonly style="background:#f5f5f5;color:#888;cursor:default;">
+      </div>
+    </div>
+    <div class="note-box">
+      ⚠️ Days in Canada <strong>before your PR date</strong> count as <strong>0.5 days</strong> each toward citizenship. Days after PR date count as 1 full day. Trips straddling your PR date are split automatically.
+    </div>
+  </div>
+
+  <!-- Travel History -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Travel History — Absences from Canada</div>
+    <div class="trips-header">
+      <div>#</div>
+      <div>Departure</div>
+      <div>Return</div>
+      <div style="text-align:center">Raw Days</div>
+      <div style="text-align:center">Counted</div>
+      <div>Destination</div>
+      <div></div>
+    </div>
+    <div id="trips-container"></div>
+    <button class="add-trip-btn" onclick="addTrip()">+ Add Trip</button>
+  </div>
+
+  <!-- Results -->
+  <div class="card">
+    <div class="card-title"><div class="dot"></div> Eligibility Results</div>
+    <div class="results-grid">
+      <div class="result-box">
+        <div class="r-label">Effective Base Days</div>
+        <div class="r-value" id="r-base">—</div>
+        <div class="r-sub">max possible in window</div>
+      </div>
+      <div class="result-box">
+        <div class="r-label">Days Absent (weighted)</div>
+        <div class="r-value" id="r-absent">—</div>
+        <div class="r-sub">pre-PR ×0.5, post-PR ×1</div>
+      </div>
+      <div class="result-box">
+        <div class="r-label">Days Present</div>
+        <div class="r-value" id="r-present">—</div>
+        <div class="r-sub">base minus weighted absent</div>
+      </div>
+      <div class="result-box">
+        <div class="r-label">Required Days</div>
+        <div class="r-value" id="r-required">—</div>
+        <div class="r-sub" id="r-req-sub">citizenship</div>
+      </div>
+      <div class="result-box">
+        <div class="r-label">Surplus / Shortfall</div>
+        <div class="r-value" id="r-surplus">—</div>
+        <div class="r-sub">+ is surplus</div>
+      </div>
+      <div class="result-box">
+        <div class="r-label">Pre-PR Counted</div>
+        <div class="r-value" id="r-prepr">—</div>
+        <div class="r-sub">169 days × 0.5</div>
+      </div>
+    </div>
+
+    <div class="eligibility-banner eligible-empty" id="eligibility-banner">
+      <div class="banner-icon" id="banner-icon">📋</div>
+      <div class="banner-text">
+        <div class="b-title" id="banner-title">Enter your details above</div>
+        <div class="b-sub" id="banner-sub">Fill in your PR date and application date to calculate eligibility</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>Presence towards requirement</span>
+        <strong id="presence-pct">—</strong>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="presence-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const CHECKLIST_DATA = [
+  { section: 'Eligibility',     item: 'Minimum 730 days physical presence met',        required: true },
+  { section: 'Forms',           item: 'IMM 5444 completed and validated',               required: true },
+  { section: 'Forms',           item: 'Form signed and dated',                          required: true },
+  { section: 'Identity Docs',   item: 'Passport bio page (copy)',                       required: true },
+  { section: 'Identity Docs',   item: 'All passport pages with stamps/visas',           required: true },
+  { section: 'Identity Docs',   item: 'Current PR card (copy front & back)',            required: true },
+  { section: 'Photos',          item: '2 photos meeting IRCC specs',                    required: true },
+  { section: 'Photos',          item: 'Name and DOB written on back of photos',         required: true },
+  { section: 'Residency Proof', item: 'CRA Notice of Assessment',                       required: false },
+  { section: 'Residency Proof', item: 'Payslips / Employment letter',                   required: false },
+  { section: 'Residency Proof', item: 'Lease agreement / Rent receipts',                required: false },
+  { section: 'Residency Proof', item: 'Utility bills / Bank statements',                required: false },
+  { section: 'Travel History',  item: 'All trips outside Canada listed (last 5 years)', required: true },
+  { section: 'Travel History',  item: 'Matches passport stamps',                        required: true },
+  { section: 'Fees',            item: 'CAD $50 fee paid',                               required: true },
+  { section: 'Fees',            item: 'Payment receipt included',                       required: true },
+  { section: 'Submission',      item: 'Application submitted online or by mail',        required: true },
+  { section: 'Final Check',     item: 'All details consistent across documents',        required: true },
+  { section: 'Final Check',     item: 'Copies are clear and legible',                   required: true },
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let checklistState = {}; // id -> 'done'|'pending'
+let trips = [];
+let db = null;
+
+// ═══════════════════════════════════════════
+// INDEXEDDB
+// ═══════════════════════════════════════════
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open('CanadaPRToolkit', 2);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('files'))
+        db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+      if (!db.objectStoreNames.contains('meta'))
+        db.createObjectStore('meta', { keyPath: 'key' });
+    };
+    req.onsuccess = e => res(e.target.result);
+    req.onerror = e => rej(e);
+  });
+}
+
+async function saveFile(file) {
+  const buf = await file.arrayBuffer();
+  const tx = db.transaction('files', 'readwrite');
+  const store = tx.objectStore('files');
+  const record = { name: file.name, size: file.size, type: file.type, data: buf, added: Date.now() };
+  return new Promise((res, rej) => {
+    const req = store.add(record);
+    req.onsuccess = () => res(req.result);
+    req.onerror = rej;
+  });
+}
+
+async function deleteFile(id) {
+  const tx = db.transaction('files', 'readwrite');
+  tx.objectStore('files').delete(id);
+}
+
+async function loadFiles() {
+  const tx = db.transaction('files', 'readonly');
+  const store = tx.objectStore('files');
+  return new Promise((res, rej) => {
+    const req = store.getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = rej;
+  });
+}
+
+async function saveMeta(key, value) {
+  const tx = db.transaction('meta', 'readwrite');
+  tx.objectStore('meta').put({ key, value });
+}
+
+async function loadMeta(key) {
+  const tx = db.transaction('meta', 'readonly');
+  const store = tx.objectStore('meta');
+  return new Promise((res) => {
+    const req = store.get(key);
+    req.onsuccess = () => res(req.result ? req.result.value : null);
+    req.onerror = () => res(null);
+  });
+}
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// CHECKLIST RENDER
+// ═══════════════════════════════════════════
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  let html = '';
+  let currentSection = '';
+  CHECKLIST_DATA.forEach((item, i) => {
+    if (item.section !== currentSection) {
+      currentSection = item.section;
+      html += `<div class="section-label">${item.section}</div>`;
+    }
+    const status = checklistState[i] || 'pending';
+    const isDone = status === 'done';
+    html += `
+      <div class="checklist-item ${isDone ? 'done' : ''}" id="cl-item-${i}">
+        <div class="item-check" onclick="toggleItem(${i})"></div>
+        <div class="item-text">${item.item}</div>
+        <span class="item-badge ${item.required ? 'badge-yes' : 'badge-opt'}">${item.required ? 'Required' : 'Optional'}</span>
+        <span class="item-status ${isDone ? 'status-done' : 'status-pending'}" onclick="toggleItem(${i})">
+          ${isDone ? '✓ Done' : '● Pending'}
+        </span>
+      </div>`;
+  });
+  container.innerHTML = html;
+  updateProgress();
+}
+
+function toggleItem(i) {
+  checklistState[i] = checklistState[i] === 'done' ? 'pending' : 'done';
+  saveMeta('checklist', checklistState);
+  renderChecklist();
+  showToast(checklistState[i] === 'done' ? '✓ Marked as done' : 'Marked as pending');
+}
+
+function updateProgress() {
+  const total = CHECKLIST_DATA.length;
+  const done = Object.values(checklistState).filter(v => v === 'done').length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('done-count').textContent = done;
+  document.getElementById('pending-count').textContent = total - done;
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ═══════════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════════
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('upload-area').classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  document.getElementById('upload-area').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-area').classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files);
+  files.forEach(uploadFile);
+}
+function handleFileSelect(e) {
+  Array.from(e.target.files).forEach(uploadFile);
+  e.target.value = '';
+}
+
+async function uploadFile(file) {
+  const id = await saveFile(file);
+  renderFiles();
+  showToast(`📎 ${file.name} uploaded`);
+}
+
+async function renderFiles() {
+  const files = await loadFiles();
+  const list = document.getElementById('file-list');
+  if (!files.length) { list.innerHTML = ''; return; }
+  const icons = { pdf: '📄', jpg: '🖼️', jpeg: '🖼️', png: '🖼️', docx: '📝', doc: '📝', default: '📎' };
+  list.innerHTML = files.map(f => {
+    const ext = f.name.split('.').pop().toLowerCase();
+    const icon = icons[ext] || icons.default;
+    const size = f.size > 1024*1024 ? (f.size/1024/1024).toFixed(1)+' MB' : Math.round(f.size/1024)+' KB';
+    return `
+      <div class="file-item">
+        <span class="file-icon">${icon}</span>
+        <span class="file-name">${f.name}</span>
+        <span class="file-size">${size}</span>
+        <button class="file-del" onclick="removeFile(${f.id})" title="Remove">×</button>
+      </div>`;
+  }).join('');
+}
+
+async function removeFile(id) {
+  await deleteFile(id);
+  renderFiles();
+  showToast('File removed');
+}
+
+// ═══════════════════════════════════════════
+// CALCULATOR
+// ═══════════════════════════════════════════
+function addTrip(dep='', ret='', dest='') {
+  trips.push({ dep, ret, dest });
+  renderTrips();
+  calculate();
+}
+
+function removeTrip(i) {
+  trips.splice(i, 1);
+  renderTrips();
+  calculate();
+  saveCalcState();
+}
+
+function renderTrips() {
+  const container = document.getElementById('trips-container');
+  if (!trips.length) {
+    container.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#bbb;font-size:0.85rem;">No trips added yet</div>';
+    return;
+  }
+  container.innerHTML = trips.map((t, i) => `
+    <div class="trip-row">
+      <div class="trip-num">${i+1}</div>
+      <input type="date" value="${t.dep}" onchange="trips[${i}].dep=this.value;calculate();saveCalcState()" placeholder="Departure">
+      <input type="date" value="${t.ret}" onchange="trips[${i}].ret=this.value;calculate();saveCalcState()" placeholder="Return">
+      <div class="trip-days" id="trip-raw-${i}">—</div>
+      <div class="trip-counted" id="trip-cnt-${i}">—</div>
+      <input type="text" value="${t.dest}" onchange="trips[${i}].dest=this.value;saveCalcState()" placeholder="Country / City">
+      <button class="trip-del" onclick="removeTrip(${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+
+function toDate(str) {
+  if (!str) return null;
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function diffDays(a, b) {
+  return Math.round((b - a) / 86400000);
+}
+
+function calculate() {
+  const appStr  = document.getElementById('app-date').value;
+  const prStr   = document.getElementById('pr-date').value;
+  const appType = document.getElementById('app-type').value;
+
+  const app = toDate(appStr);
+  const pr  = toDate(prStr);
+  if (!app || !pr) return;
+
+  const winStart = new Date(app); winStart.setDate(winStart.getDate() - 1826);
+  document.getElementById('window-start').value = winStart.toISOString().split('T')[0];
+
+  const required = appType === 'citizenship' ? 1095 : 730;
+  document.getElementById('r-required').textContent = required;
+  document.getElementById('r-req-sub').textContent = appType === 'citizenship' ? 'citizenship' : 'PR renewal';
+
+  // Effective base
+  const preDays  = Math.max(0, diffDays(winStart, pr));
+  const postDays = diffDays(pr > winStart ? pr : winStart, app);
+  const base = preDays * 0.5 + postDays;
+
+  // Pre-PR counted sub-label
+  document.querySelector('#r-prepr + .r-sub') && null;
+  document.getElementById('r-prepr').textContent = (preDays * 0.5).toFixed(1);
+  document.querySelector('[data-prepr-sub]') && null;
+
+  // Weighted absent
+  let weightedAbsent = 0;
+  trips.forEach((t, i) => {
+    const dep = toDate(t.dep), ret = toDate(t.ret);
+    if (!dep || !ret || ret <= dep) {
+      document.getElementById('trip-raw-'+i).textContent = '—';
+      document.getElementById('trip-cnt-'+i).textContent = '—';
+      return;
+    }
+    const rawDays = diffDays(dep, ret);
+    // clip to window
+    const cd = dep < winStart ? winStart : dep;
+    const cr = ret > app ? app : ret;
+    if (cr <= cd) {
+      document.getElementById('trip-raw-'+i).textContent = rawDays;
+      document.getElementById('trip-cnt-'+i).textContent = '—';
+      return;
+    }
+    let w;
+    if (cr <= pr)      w = diffDays(cd, cr) * 0.5;
+    else if (cd >= pr) w = diffDays(cd, cr) * 1.0;
+    else               w = diffDays(cd, pr) * 0.5 + diffDays(pr, cr) * 1.0;
+
+    weightedAbsent += w;
+    document.getElementById('trip-raw-'+i).textContent = rawDays;
+    document.getElementById('trip-cnt-'+i).textContent = w % 1 === 0 ? w : w.toFixed(1);
+  });
+
+  const present = base - weightedAbsent;
+  const surplus = present - required;
+  const pct = Math.min(100, Math.round((present / required) * 100));
+
+  document.getElementById('r-base').textContent    = base % 1 === 0 ? base : base.toFixed(1);
+  document.getElementById('r-absent').textContent  = weightedAbsent % 1 === 0 ? weightedAbsent : weightedAbsent.toFixed(1);
+  document.getElementById('r-present').textContent = present % 1 === 0 ? present : present.toFixed(1);
+  document.getElementById('r-surplus').textContent = (surplus >= 0 ? '+' : '') + (surplus % 1 === 0 ? surplus : surplus.toFixed(1));
+  document.getElementById('r-prepr').textContent   = (preDays * 0.5).toFixed(1);
+  document.getElementById('presence-pct').textContent = pct + '%';
+  document.getElementById('presence-bar').style.width = pct + '%';
+
+  const banner   = document.getElementById('eligibility-banner');
+  const icon     = document.getElementById('banner-icon');
+  const title    = document.getElementById('banner-title');
+  const sub      = document.getElementById('banner-sub');
+
+  banner.className = 'eligibility-banner';
+  if (present >= required) {
+    banner.classList.add('eligible-yes');
+    icon.textContent = '✅';
+    title.textContent = 'YES — You are eligible!';
+    sub.textContent   = `You have ${present.toFixed(1)} weighted days present (need ${required}). Surplus: ${surplus.toFixed(1)} days.`;
+  } else {
+    banner.classList.add('eligible-no');
+    icon.textContent = '❌';
+    title.textContent = 'Not yet eligible';
+    sub.textContent   = `You have ${present.toFixed(1)} days but need ${required}. Shortfall: ${Math.abs(surplus).toFixed(1)} days.`;
+  }
+
+  saveCalcState();
+}
+
+function saveCalcState() {
+  const state = {
+    appDate:  document.getElementById('app-date').value,
+    prDate:   document.getElementById('pr-date').value,
+    appType:  document.getElementById('app-type').value,
+    trips
+  };
+  saveMeta('calcState', state);
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+async function init() {
+  db = await openDB();
+
+  // Load checklist state
+  const savedChecklist = await loadMeta('checklist');
+  if (savedChecklist) checklistState = savedChecklist;
+  renderChecklist();
+
+  // Load files
+  renderFiles();
+
+  // Load calc state
+  const savedCalc = await loadMeta('calcState');
+  if (savedCalc) {
+    if (savedCalc.appDate) document.getElementById('app-date').value = savedCalc.appDate;
+    if (savedCalc.prDate)  document.getElementById('pr-date').value  = savedCalc.prDate;
+    if (savedCalc.appType) document.getElementById('app-type').value = savedCalc.appType;
+    if (savedCalc.trips)   trips = savedCalc.trips;
+  }
+  renderTrips();
+  calculate();
+}
+
+init();
+</script>
+</body>
+</html>
